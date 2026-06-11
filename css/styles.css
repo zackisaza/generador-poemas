@@ -1,0 +1,719 @@
+        :root {
+            /* Design tokens — single source of truth for the app chrome.
+               Light, editorial theme: warm ivory ground, off-white surfaces,
+               charcoal text, and a single muted taupe/champagne accent. */
+            --bg-app: #f5f1ea;
+            --bg-panel: rgba(255, 255, 255, 0.74);
+            --bg-panel-solid: #ffffff;
+            --bg-panel-2: #f3efe7;
+            --bg-input: #faf8f4;
+            --bg-input-hover: #f1ece3;
+            --border: #e4ded3;
+            --border-strong: #d3cabb;
+            --border-soft: #ece7dd;
+            --text: #2b2b2b;
+            --text-dim: #6f6a61;
+            --text-faint: #a89f91;
+            /* Accent — muted taupe / dark champagne. Change here to retheme. */
+            --accent: #1a1a1a;
+            --accent-bright: #000000;
+            --accent-soft: rgba(0, 0, 0, 0.10);
+            --radius: 18px;
+            --radius-sm: 10px;
+            /* Layered depth — soft, low-opacity shadows for a light ground */
+            --shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 24px 50px -24px rgba(80, 66, 44, 0.22), 0 8px 22px -14px rgba(80, 66, 44, 0.14);
+            --shadow-soft: 0 12px 28px -18px rgba(80, 66, 44, 0.20);
+            --ease: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+            /* Responsive lateral gutter — generous, scales with viewport */
+            --gutter: clamp(20px, 4vw, 64px);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; height: 100%; }
+
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            background:
+                radial-gradient(1300px 760px at 12% -12%, rgba(0, 0, 0, 0.04), transparent 60%),
+                radial-gradient(1000px 640px at 112% 8%, rgba(180, 170, 150, 0.10), transparent 55%),
+                radial-gradient(900px 900px at 50% 130%, rgba(200, 175, 140, 0.08), transparent 60%),
+                var(--bg-app);
+            background-attachment: fixed;
+            /* Single-viewport shell: fill the screen exactly, no page scroll on desktop */
+            height: 100vh;
+            height: 100dvh;
+            padding: clamp(14px, 2vw, 24px) var(--gutter) clamp(10px, 1.4vw, 18px);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            flex: none;
+            margin: 0 0 clamp(12px, 1.4vw, 18px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand-mark {
+            width: 44px; height: 44px; flex: none;
+            border-radius: 13px;
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+            display: grid; place-items: center;
+            color: #fff;
+            position: relative;
+            box-shadow: 0 10px 24px -8px rgba(132, 101, 57, 0.45), 0 0 0 1px rgba(255,255,255,0.18) inset;
+            transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+        }
+        /* Subtle sheen on the mark */
+        .brand-mark::after {
+            content: ''; position: absolute; inset: 0; border-radius: inherit;
+            background: linear-gradient(160deg, rgba(255,255,255,0.30), transparent 45%);
+            pointer-events: none;
+        }
+        .brand-mark:hover { transform: translateY(-2px) rotate(-4deg); box-shadow: 0 16px 30px -10px rgba(0, 0, 0, 0.45); }
+        .brand-mark svg { width: 25px; height: 25px; position: relative; }
+        .sec-icon { display: inline-flex; color: var(--accent-bright); }
+        .sec-icon svg { width: 18px; height: 18px; }
+        .ghost-btn svg, .toggle-row svg { width: 16px; height: 16px; }
+        .chevron svg { width: 16px; height: 16px; display: block; }
+        .brand h1 {
+            font-family: 'Ubuntu', sans-serif;
+            font-size: clamp(1.4em, 1.1em + 0.6vw, 1.7em);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: 0.2px;
+            color: var(--text);
+        }
+        .brand p { color: var(--text-dim); font-size: 0.82em; margin-top: 3px; }
+
+        .topbar-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .ghost-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 11px 18px;
+            background: var(--bg-panel);
+            -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.85em; font-weight: 600; cursor: pointer;
+            font-family: inherit;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.2s var(--ease), background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+        }
+        .ghost-btn:hover { background: var(--bg-input-hover); color: var(--text); border-color: var(--border-strong); transform: translateY(-2px); }
+        .ghost-btn:active { transform: translateY(0); }
+        .ghost-btn svg { transition: transform 0.4s var(--ease); }
+        .ghost-btn:hover svg { transform: rotate(-90deg); }
+
+        .container {
+            width: 100%;
+            flex: 1 1 auto;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.9fr);
+            gap: clamp(16px, 2vw, 30px);
+            align-items: stretch;
+        }
+
+        .editor-panel {
+            background: var(--bg-panel);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+            backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            /* Fixed-height column: tab bar on top, scrollable active panel below */
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .editor-panel > form {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== TAB BAR (built from section heads by tabs script) ===== */
+        .tab-bar {
+            flex: none;
+            display: flex;
+            gap: 4px;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-soft);
+            overflow-x: auto;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+        .tab-bar::-webkit-scrollbar { height: 5px; }
+        .tab-bar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+        .tab-btn {
+            flex: 0 0 auto;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 14px;
+            background: none; border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            color: var(--text-dim); font-family: inherit;
+            font-size: 0.82em; font-weight: 600; letter-spacing: 0.2px;
+            cursor: pointer; white-space: nowrap;
+            transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+        }
+        .tab-btn svg { width: 17px; height: 17px; }
+        .tab-btn:hover { background: var(--bg-panel-2); color: var(--text); }
+        .tab-btn.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-color: var(--accent-bright);
+        }
+
+        /* Tabs mode: only the active section is shown, and it fills/scrolls */
+        body.tabs-mode .editor-panel form > .section.tab-hidden { display: none; }
+        body.tabs-mode .editor-panel form > .section {
+            flex: 1 1 auto;
+            min-height: 0;
+            border-bottom: none;
+            display: flex;
+            flex-direction: column;
+        }
+        /* The original section-head is replaced by the tab bar — hide it in tabs mode */
+        body.tabs-mode .editor-panel .section > .section-head { display: none; }
+        /* Force the active section body fully open (overrides collapse animation) */
+        body.tabs-mode .editor-panel .section > .section-body {
+            grid-template-rows: 1fr;
+            opacity: 1;
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+        }
+        body.tabs-mode .editor-panel .section > .section-body > .section-body-inner {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transform: none;
+            padding: 18px 22px 22px;
+            align-content: start;
+        }
+        body.tabs-mode .editor-panel .section-body-inner::-webkit-scrollbar { width: 7px; }
+        body.tabs-mode .editor-panel .section-body-inner::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+        /* In tabs mode the section toggles instantly on switch — the staggered
+           entrance is only for initial load, so it must not replay per tab. */
+        body.tabs-mode .editor-panel .section { animation: none; opacity: 1; }
+        /* On very wide screens, give the editor a touch more room.
+           Note: the old multi-column flow is disabled in tabs mode (only one
+           section is visible at a time), so no column-count here. */
+        @media (min-width: 1700px) {
+            .container { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.78fr); }
+        }
+
+        /* Collapsible sections */
+        .section { border-bottom: 1px solid var(--border-soft); position: relative; }
+        .section:last-child { border-bottom: none; }
+        .section-head {
+            display: flex; align-items: center; gap: 13px;
+            width: 100%;
+            padding: 19px 26px;
+            background: none; border: none; cursor: pointer;
+            color: var(--text); font-family: inherit;
+            font-size: 0.97em; font-weight: 600; text-align: left;
+            letter-spacing: 0.2px;
+            transition: background 0.25s var(--ease), padding-left 0.25s var(--ease);
+        }
+        /* Accent rail that grows on hover */
+        .section-head::before {
+            content: ''; position: absolute; left: 0; top: 14px; bottom: 14px;
+            width: 3px; border-radius: 0 3px 3px 0;
+            background: linear-gradient(var(--accent-bright), var(--accent));
+            transform: scaleY(0); transform-origin: center;
+            transition: transform 0.3s var(--ease);
+        }
+        .section-head:hover { background: var(--bg-panel-2); padding-left: 30px; }
+        .section-head:hover::before { transform: scaleY(1); }
+        .section:not(.collapsed) > .section-head .sec-icon { color: var(--accent-bright); }
+        .section-head .sec-icon { font-size: 1.1em; width: 24px; text-align: center; transition: transform 0.3s var(--ease), color 0.3s var(--ease); }
+        .section-head:hover .sec-icon { transform: scale(1.15); }
+        .section-head .chevron {
+            margin-left: auto; color: var(--text-faint);
+            transition: transform 0.3s var(--ease), color 0.2s var(--ease);
+        }
+        .section-head:hover .chevron { color: var(--text-dim); }
+        .section.collapsed .chevron { transform: rotate(-90deg); }
+
+        /* Animated collapse: grid-template-rows 1fr <-> 0fr keeps the toggle on .collapsed
+           class intact while giving a fluid, height-aware open/close. */
+        .section-body {
+            display: grid;
+            grid-template-rows: 1fr;
+            opacity: 1;
+            transition: grid-template-rows 0.4s var(--ease), opacity 0.32s var(--ease-soft);
+        }
+        .section.collapsed .section-body {
+            grid-template-rows: 0fr;
+            opacity: 0;
+        }
+        /* Inner wrapper is the actual overflow clip — the row track animates around it */
+        .section-body > .section-body-inner {
+            min-height: 0;
+            overflow: hidden;
+            display: grid;
+            gap: 18px;
+            padding: 4px 26px 26px;
+            transition: transform 0.4s var(--ease);
+        }
+        .section.collapsed .section-body > .section-body-inner {
+            transform: translateY(-6px);
+        }
+
+        .form-group { display: grid; gap: 9px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        label { font-weight: 600; color: var(--text-dim); font-size: 0.82em; letter-spacing: 0.3px; text-transform: uppercase; }
+        label .range-val { text-transform: none; }
+        .hint { color: var(--text-faint); font-size: 0.78em; line-height: 1.5; }
+
+        input[type="text"], textarea, select {
+            width: 100%; padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.9em;
+            font-family: inherit;
+            background: var(--bg-input); color: var(--text);
+            transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
+        }
+        input[type="text"]:hover, textarea:hover, select:hover { border-color: var(--border-strong); }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none; border-color: var(--accent-bright);
+            box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-soft);
+            background: var(--bg-input-hover);
+        }
+        textarea {
+            resize: vertical; min-height: 140px; line-height: 1.7;
+            font-family: 'Montserrat', sans-serif; font-size: 0.95em;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236f6a61' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        /* Range sliders */
+        .range-row { display: flex; align-items: center; gap: 14px; }
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            flex: 1; height: 7px; border-radius: 99px;
+            background: #ddd0bb;
+            border: 1px solid #c7b89d;
+            box-shadow: inset 0 1px 2px rgba(80, 66, 44, 0.18);
+            outline: none; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 20px; height: 20px; border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid var(--accent-bright);
+            box-shadow: 0 2px 7px rgba(80, 66, 44, 0.22);
+            transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.25); box-shadow: 0 2px 7px rgba(80, 66, 44, 0.22), 0 0 0 6px var(--accent-soft); }
+        input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.1); box-shadow: 0 2px 7px rgba(80, 66, 44, 0.22), 0 0 0 9px var(--accent-soft); }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px; height: 20px; border-radius: 50%;
+            background: #ffffff; border: 3px solid var(--accent-bright);
+            box-shadow: 0 2px 7px rgba(80, 66, 44, 0.22); cursor: pointer;
+        }
+        .range-val {
+            min-width: 56px; text-align: right;
+            font-variant-numeric: tabular-nums;
+            font-weight: 600; font-size: 0.85em; color: var(--text);
+        }
+
+        /* Toolbar (markdown) */
+        .toolbar { display: flex; gap: 7px; flex-wrap: wrap; }
+        .format-btn {
+            min-width: 38px; padding: 8px 11px;
+            background: var(--bg-input); color: var(--text-dim);
+            border: 1px solid var(--border); border-radius: 8px;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            transition: all 0.15s var(--ease);
+        }
+        .format-btn:hover { background: var(--bg-input-hover); color: var(--text); border-color: var(--border-strong); }
+        .format-btn:active { transform: scale(0.95); }
+
+        /* Color controls */
+        .color-row { display: flex; gap: 10px; align-items: center; }
+        input[type="color"] {
+            width: 46px; height: 40px; padding: 0;
+            border: 1px solid var(--border); border-radius: 9px;
+            background: var(--bg-input); cursor: pointer;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 4px; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 5px; }
+        .hex-input { width: 110px !important; font-variant-numeric: tabular-nums; text-transform: lowercase; }
+
+        /* Checkbox / toggle */
+        .toggle-row { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .toggle {
+            position: relative; width: 44px; height: 25px; flex: none;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 99px; transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+        }
+        .toggle::after {
+            content: ''; position: absolute; top: 2px; left: 2px;
+            width: 19px; height: 19px; border-radius: 50%;
+            background: var(--text-dim); transition: transform 0.2s var(--ease), background 0.2s var(--ease);
+        }
+        input[type="checkbox"] { position: absolute; opacity: 0; pointer-events: none; }
+        input[type="checkbox"]:checked + .toggle { background: var(--accent); border-color: var(--accent-bright); }
+        input[type="checkbox"]:checked + .toggle::after { transform: translateX(19px); background: #fff; }
+        .toggle-row span { font-weight: 600; font-size: 0.88em; color: var(--text); }
+
+        /* Segmented control (chips) */
+        .segmented { display: flex; gap: 6px; background: var(--bg-input); padding: 5px; border-radius: 12px; border: 1px solid var(--border); }
+        .segmented button {
+            flex: 1; padding: 10px 6px; border: none; background: none;
+            color: var(--text-dim); font-family: inherit; font-size: 0.82em; font-weight: 600;
+            border-radius: 8px; cursor: pointer; transition: color 0.18s var(--ease), background 0.25s var(--ease), box-shadow 0.25s var(--ease), transform 0.12s var(--ease);
+        }
+        .segmented button:hover { color: var(--text); background: rgba(80, 66, 44, 0.05); }
+        .segmented button:active { transform: scale(0.96); }
+        .segmented button.active { background: linear-gradient(135deg, var(--accent-bright), var(--accent)); color: #fff; box-shadow: 0 4px 12px -3px rgba(132, 101, 57, 0.45); }
+
+        /* Theme preset chips */
+        .preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 11px; }
+        .preset {
+            cursor: pointer; border-radius: 12px; overflow: hidden;
+            border: 1px solid var(--border); background: var(--bg-input);
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+        }
+        .preset:hover { transform: translateY(-4px) scale(1.02); border-color: var(--border-strong); box-shadow: 0 14px 24px -12px rgba(80, 66, 44, 0.28); }
+        .preset:active { transform: translateY(-1px) scale(0.99); }
+        .preset.active { border-color: var(--accent-bright); box-shadow: 0 0 0 2px var(--accent-soft), 0 10px 20px -12px rgba(0, 0, 0, 0.4); }
+        .preset-swatch { height: 56px; display: grid; place-items: center; transition: transform 0.3s var(--ease); }
+        .preset:hover .preset-swatch { transform: scale(1.06); }
+        .preset-swatch span { font-family: 'Playfair Display', serif; font-size: 23px; line-height: 1; }
+        .preset-name { padding: 8px 4px; text-align: center; font-size: 0.72em; font-weight: 600; color: var(--text-dim); transition: color 0.2s var(--ease); }
+        .preset.active .preset-name { color: var(--text); }
+
+        /* Aspect ratio picker */
+        .ratio-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; }
+        .ratio {
+            cursor: pointer; padding: 13px 6px; text-align: center;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 12px; transition: transform 0.18s var(--ease), border-color 0.18s var(--ease), background 0.18s var(--ease), box-shadow 0.18s var(--ease);
+        }
+        .ratio:hover { border-color: var(--border-strong); transform: translateY(-3px); box-shadow: var(--shadow-soft); }
+        .ratio:active { transform: translateY(-1px) scale(0.98); }
+        .ratio.active { border-color: var(--accent-bright); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent-soft); }
+        .ratio-box { margin: 0 auto 8px; background: var(--text-faint); border-radius: 3px; transition: background 0.18s var(--ease); }
+        .ratio.active .ratio-box { background: var(--accent-bright); }
+        .ratio-label { font-size: 0.72em; font-weight: 600; color: var(--text-dim); }
+        .ratio.active .ratio-label { color: var(--text); }
+
+        /* Preview panel — fixed-height flex column inside the viewport grid */
+        .preview-panel {
+            background: var(--bg-panel);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+            backdrop-filter: blur(20px) saturate(1.2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: clamp(14px, 1.5vw, 22px);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .preview-head { flex: none; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .preview-head h2 { font-family: 'Ubuntu', sans-serif; font-size: 1.2em; font-weight: 600; }
+        .preview-meta {
+            font-size: 0.75em; color: var(--text-dim); font-variant-numeric: tabular-nums;
+            padding: 5px 11px; background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 99px; letter-spacing: 0.4px;
+        }
+        .preview-stage {
+            background:
+                repeating-conic-gradient(#f0ece4 0% 25%, #e6e0d5 0% 50%) 50% / 26px 26px;
+            border-radius: 14px; padding: clamp(12px, 1.6vw, 22px); display: flex;
+            align-items: center; justify-content: center;
+            border: 1px solid var(--border-soft);
+            box-shadow: inset 0 2px 14px rgba(80, 66, 44, 0.10);
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow: hidden;
+        }
+        #preview {
+            max-width: 100%; max-height: 100%;
+            width: auto; height: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            box-shadow: 0 18px 40px -14px rgba(80, 66, 44, 0.35); display: block;
+            transition: opacity 0.35s var(--ease-soft), transform 0.45s var(--ease);
+        }
+        /* Brief fade/scale pulse applied by the animation script when src updates */
+        #preview.is-refreshing { opacity: 0.35; transform: scale(0.985); }
+        #canvas { display: none; }
+
+        .download-row { flex: none; display: flex; gap: 12px; margin-top: 14px; }
+        .btn-download {
+            flex: 1; padding: 16px; gap: 11px;
+            position: relative; overflow: hidden;
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+            color: #fff; border: none; border-radius: 13px;
+            font-size: 1em; font-weight: 700; cursor: pointer;
+            font-family: inherit; letter-spacing: 0.3px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 24px -10px rgba(132, 101, 57, 0.45);
+            transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), filter 0.2s var(--ease);
+        }
+        /* Sheen sweep on hover */
+        .btn-download::before {
+            content: ''; position: absolute; top: 0; left: -75%; width: 50%; height: 100%;
+            background: linear-gradient(100deg, transparent, rgba(255,255,255,0.28), transparent);
+            transform: skewX(-18deg); transition: left 0.6s var(--ease);
+        }
+        .btn-download:hover::before { left: 130%; }
+        .btn-download:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 16px 30px -10px rgba(0, 0, 0, 0.45); }
+        .btn-download:active { transform: translateY(0); }
+        .btn-download svg { width: 20px; height: 20px; position: relative; transition: transform 0.3s var(--ease); }
+        .btn-download:hover svg { transform: translateY(2px); }
+
+        .footer {
+            flex: none;
+            margin-top: clamp(8px, 1vw, 14px);
+            background: transparent;
+            padding: 6px 20px 2px; text-align: center;
+            z-index: 1000;
+        }
+        .footer a {
+            display: inline-flex; align-items: center; gap: 9px;
+            color: var(--text); text-decoration: none;
+            font-weight: 600; font-size: 0.92em;
+            transition: transform 0.2s var(--ease), color 0.2s var(--ease);
+        }
+        .footer a:hover { transform: translateY(-2px); color: var(--accent-bright); }
+        .instagram-icon { width: 22px; height: 22px; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: var(--bg-panel-2); color: var(--text);
+            border: 1px solid var(--border-strong);
+            padding: 12px 20px; border-radius: 11px; font-size: 0.86em; font-weight: 600;
+            box-shadow: var(--shadow); opacity: 0; pointer-events: none;
+            transition: opacity 0.25s var(--ease), transform 0.25s var(--ease); z-index: 1100;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Toolbar / format & color micro-interactions */
+        .format-btn:hover { transform: translateY(-1px); }
+        input[type="color"] { transition: transform 0.18s var(--ease), border-color 0.18s var(--ease); }
+        input[type="color"]:hover { transform: scale(1.05); border-color: var(--border-strong); }
+        .toggle-row:hover .toggle { border-color: var(--border-strong); }
+        .toggle-row { transition: opacity 0.2s var(--ease); }
+        .toggle-row span { transition: color 0.2s var(--ease); }
+
+        /* ====================================================================
+           ENTRANCE ANIMATIONS — staggered reveal on load
+           Driven by the .reveal class added by the animation script (below),
+           with explicit per-item delays via the --i custom property.
+           ==================================================================== */
+        @keyframes rise-in {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-pop {
+            from { opacity: 0; transform: scale(0.96); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        .reveal > .topbar,
+        .reveal > .container > .editor-panel,
+        .reveal > .container > .preview-panel {
+            opacity: 0;
+            animation: rise-in 0.7s var(--ease) forwards;
+        }
+        .reveal > .topbar { animation-delay: 0.05s; }
+        .reveal > .container > .editor-panel { animation-delay: 0.16s; }
+        .reveal > .container > .preview-panel { animation-delay: 0.26s; }
+
+        /* Sections stagger inside the editor once it is revealed */
+        .reveal .editor-panel .section {
+            opacity: 0;
+            animation: rise-in 0.6s var(--ease) forwards;
+            animation-delay: calc(0.30s + var(--i, 0) * 0.06s);
+        }
+
+        /* ====================================================================
+           TABLET / NARROW DESKTOP — stack columns, preview on top.
+           Still single-viewport; the editor panel scrolls internally.
+           ==================================================================== */
+        @media (max-width: 1080px) and (min-width: 769px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: minmax(0, 0.9fr) minmax(0, 1.1fr);
+            }
+            .preview-panel { order: -1; }
+        }
+
+        /* ====================================================================
+           MOBILE (<=768px) — preview pinned on top, controls below,
+           fixed bottom-nav with the 7 tabs. Native-app feel.
+           ==================================================================== */
+        @media (max-width: 768px) {
+            :root { --gutter: 0px; }
+            body {
+                padding: 0;
+                /* room for the fixed bottom-nav + iOS safe area */
+                --bottom-nav-h: 64px;
+            }
+            .topbar {
+                margin: 0;
+                padding: 10px 16px calc(10px + env(safe-area-inset-top, 0px));
+                border-bottom: 1px solid var(--border-soft);
+                background: var(--bg-panel);
+                -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+            }
+            .brand p { display: none; }
+            .brand h1 { font-size: 1.15em; }
+            .brand-mark { width: 38px; height: 38px; }
+            .brand-mark svg { width: 20px; height: 20px; }
+
+            .container {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                /* leave space for bottom-nav so nothing hides under it */
+                padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+            }
+
+            /* Preview pinned on top, comfortable fraction of the screen */
+            .preview-panel {
+                order: -1;
+                flex: none;
+                height: 42dvh;
+                border-radius: 0;
+                border-left: none; border-right: none; border-top: none;
+                box-shadow: none;
+                padding: 10px 14px 12px;
+            }
+            .preview-head { margin-bottom: 8px; }
+            .preview-stage { padding: 8px; }
+            /* On mobile the download button lives in the bottom-nav row, hide the inline one */
+            .preview-panel .download-row { display: none; }
+
+            /* Controls fill the rest and scroll internally */
+            .editor-panel {
+                flex: 1 1 auto;
+                border-radius: 0;
+                border-left: none; border-right: none; border-bottom: none;
+                box-shadow: none;
+            }
+            /* The desktop tab bar is hidden on mobile; the bottom-nav drives tabs */
+            .tab-bar { display: none; }
+            body.tabs-mode .editor-panel .section > .section-body > .section-body-inner {
+                padding: 18px 16px 22px;
+                gap: 20px;
+            }
+
+            /* Touch-friendly controls */
+            input[type="text"], textarea, select { padding: 14px 14px; font-size: 1em; }
+            .segmented button { padding: 13px 6px; }
+            .toggle-row { padding: 4px 0; }
+            input[type="range"] { height: 8px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .ratio-grid { grid-template-columns: repeat(2, 1fr); }
+            .ratio { padding: 16px 6px; }
+            .format-btn { min-width: 44px; padding: 11px 13px; }
+
+            /* ===== BOTTOM NAV (built by tabs script) ===== */
+            .bottom-nav {
+                position: fixed; left: 0; right: 0; bottom: 0;
+                z-index: 1200;
+                display: flex;
+                align-items: stretch;
+                background: rgba(250, 247, 242, 0.94);
+                -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+                border-top: 1px solid var(--border);
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .bottom-nav::-webkit-scrollbar { display: none; }
+            .bottom-nav-btn {
+                flex: 1 0 auto;
+                min-width: 56px;
+                min-height: 56px;
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+                gap: 3px;
+                padding: 8px 10px;
+                background: none; border: none;
+                color: var(--text-faint); font-family: inherit;
+                font-size: 0.64em; font-weight: 600; letter-spacing: 0.2px;
+                cursor: pointer; white-space: nowrap;
+                transition: color 0.2s var(--ease);
+            }
+            .bottom-nav-btn svg { width: 22px; height: 22px; }
+            .bottom-nav-btn.active { color: var(--accent); }
+            .bottom-nav-btn.active svg { transform: translateY(-1px); }
+
+            /* Floating "Descargar PNG" always accessible above the nav */
+            .mobile-download {
+                position: fixed;
+                right: 14px;
+                bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px) + 12px);
+                z-index: 1250;
+                display: inline-flex; align-items: center; gap: 8px;
+                padding: 13px 18px;
+                background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+                color: #fff; border: none; border-radius: 99px;
+                font-family: inherit; font-size: 0.9em; font-weight: 700;
+                box-shadow: 0 10px 24px -8px rgba(132, 101, 57, 0.55);
+                cursor: pointer;
+            }
+            .mobile-download svg { width: 18px; height: 18px; }
+            .mobile-download:active { transform: scale(0.97); }
+
+            /* Footer becomes a tiny strip above the nav (not fixed) */
+            .footer { padding: 8px 16px; margin: 0; }
+            .footer a { font-size: 0.82em; }
+        }
+
+        /* Hide mobile-only chrome on larger screens */
+        @media (min-width: 769px) {
+            .bottom-nav, .mobile-download { display: none !important; }
+        }
+
+        @media (max-width: 560px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .ratio-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* ====================================================================
+           REDUCED MOTION — disable all non-essential animation/transition.
+           Collapse still works (it just snaps), entrances appear instantly.
+           ==================================================================== */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-delay: 0ms !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+            .reveal > .topbar,
+            .reveal > .container > .editor-panel,
+            .reveal > .container > .preview-panel,
+            .reveal .editor-panel .section { opacity: 1; }
+            #preview.is-refreshing { opacity: 1; transform: none; }
+        }
+    

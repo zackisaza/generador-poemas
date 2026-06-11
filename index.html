@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagrameador de poemas · Fantástico Sr. Zorro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="topbar">
+        <div class="brand">
+            <div class="brand-mark"><i data-lucide="feather"></i></div>
+            <div>
+                <h1>Instagrameador de poemas</h1>
+                <p>del Fantástico Sr. Zorro — estudio de composición</p>
+            </div>
+        </div>
+        <div class="topbar-actions">
+            <button class="ghost-btn" id="resetBtn" title="Volver a los valores por defecto"><i data-lucide="rotate-ccw"></i> Restablecer</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="editor-panel">
+            <form id="poemForm" class="editor-cols" autocomplete="off">
+
+                <!-- CONTENIDO -->
+                <div class="section" data-section>
+                    <button type="button" class="section-head"><span class="sec-icon"><i data-lucide="pen-line"></i></span> Contenido <span class="chevron"><i data-lucide="chevron-down"></i></span></button>
+                    <div class="section-body"><div class="section-body-inner">
+                        <div class="form-group">
+                            <label for="title">Título del poema</label>
+                            <input type="text" id="title" name="title" placeholder="Escribe el título…">
+                        </div>
+                        <div class="form-group">
+                            <label for="poem">Texto del poema</label>
+                            <div class="toolbar">
+                                <button type="button" id="boldBtn" class="format-btn" title="Negrita"><strong>B</strong></button>
+                                <button type="button" id="italicBtn" class="format-btn" title="Cursiva"><em>I</em></button>
+                                <button type="button" id="boldItalicBtn" class="format-btn" title="Negrita + Cursiva"><strong><em>BI</em></strong></button>
+                                <button type="button" id="underlineBtn" class="format-btn" title="Subrayado"><u>U</u></button>
+                                <button type="button" id="strikeBtn" class="format-btn" title="Tachado"><s>S</s></button>
+                                <button type="button" id="clearFormatBtn" class="format-btn" title="Quitar formato">Limpiar</button>
+                            </div>
+                            <textarea id="poem" name="poem" rows="10" placeholder="Escribe tu poema aquí…"></textarea>
+                            <p class="hint">Selecciona texto y pulsa un botón para aplicar formato. Una línea en blanco separa estrofas.</p>
+                        </div>
+                    </div></div>
+                </div>
+
+                <!-- FORMATO / LIENZO -->
+                <div class="section" data-section>
+                    <button type="button" class="section-head"><span class="sec-icon"><i data-lucide="crop"></i></span> Formato del lienzo <span class="chevron"><i data-lucide="chevron-down"></i></span></button>
+                    <div class="section-body"><div class="section-body-inner">
+                        <div class="form-group">
+                            <label>Proporción</label>
+                            <div class="ratio-grid" id="ratioGrid"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Columnas del poema</label>
+                            <div class="segmented" id="columnsSeg">
+                                <button type="button" data-val="auto" class="active">Auto</button>
+                                <button type="button" data-val="1">1 columna</button>
+                                <button type="button" data-val="2">2 columnas</button>
+                            </div>
+                            <p class="hint">Auto decide según el texto. Forzá 1 o 2 columnas cuando quieras.</p>
+                        </div>
+                    </div></div>
+                </div>
+
+                <!-- TEMAS -->
+                <div class="section" data-section>
+                    <button type="button" class="section-head"><span class="sec-icon"><i data-lucide="palette"></i></span> Temas <span class="chevron"><i data-lucide="chevron-down"></i></span></button>
+                    <div class="section-body"><div class="section-body-inner">
+                        <p class="hint">Un punto de partida. Cambia colores y fuentes abajo cuando quieras.</p>
+                        <div class="preset-grid" id="presetGrid"></div>
+                    </div></div>
+                </div>
+
+                <!-- COLORES -->
+                <div class="section" data-section>
+                    <button type="button" class="section-head"><span class="sec-icon"><i data-lucide="droplet"></i></span> Colores <span class="chevron"><i data-lucide="chevron-down"></i></span></button>
+                    <div class="section-body"><div class="section-body-inner">
+                        <div class="form-group">
+                            <label>Tipo de fondo</label>
+                            <div class="segmented" id="bgTypeSeg">
+                                <button type="button" data-val="solid" class="active">Sólido</button>
+                                <button type="button" data-val="gradient">Degradado</button>
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label id="bgColorLabel" for="backgroundColor">Color de fondo</label>
+                                <div class="color-row">
+                                    <input type="color" id="backgroundColor" value="#0a0a0a">
+                                    <input type="text" id="backgroundColorHex" class="hex-input" value="#0a0a0a">
+                                </div>
+                            </div>
+                            <div class="form-group" id="bgColor2Group" style="display:none;">
+                                <label for="backgroundColor2">Segundo color</label>
+                                <div class="color-row">
+                                    <input type="color" id="backgroundColor2" value="#3a0000">
+                                    <input type="text" id="backgroundColor2Hex" class="hex-input" value="#3a0000">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="gradientAngleGroup" style="display:none;">
+                            <label>Ángulo del degradado <span class="range-val" id="gradientAngleValue" style="float:right">135°</span></label>
+                            <div class="range-row">
+                                <input type="range" id="gradientAngle" min="0" max="360" value="135" step="5">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="textColor">Color del texto</label>
+                            <div class="color-row">
+                                <input type="color" id="textColor" value="#f5f5f5">
+                                <input type="text" id="textColorHex" class="hex-input" value="#f5f5f5">
+                            </div>
+                        </div>
+                    </div></div>
+                </div>
+
+                <!-- TIPOGRAFÍA -->
+                <div class="section" data-section>
+                    <button type="button" class="section-head"><span class="sec-icon"><i data-lucide="type"></i></span> Tipografía <span class="chevron"><i data-lucide="chevron-down"></i></span></button>
+                    <div class="section-body"><div class="section-body-inner">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="titleFont">Fuente del título</label>
+                                <select id="titleFont"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fontFamily">Fuente del poema</label>
+                                <select id="fontFamily"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Alineación del texto</label>
+                            <div class="segmented" id="alignSeg">
+                                <button type="button" data-val="left">⬅ Izq.</button>
+                                <button type="button" data-val="center" class="active">⬌ Centro</button>
+                                <button type="button" data-val="right">Der. ➡</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Tamaño del título <span class="range-val" id="titleSizeValue" style="float:right">120 px</span></label>
+                            <div class="range-row"><input type="range" id="titleSize" min="60" max="240" value="120" step="5"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Tamaño del poema <span class="range-val" id="fontSizeValue" style="float:right">85 px</span></label>
+                            <div class="range-row"><input type="range" id="fontSize" min="40" max="160" value="85" step="5"></div>
+                        </div>
+                        <label class="toggle-row">
+                            <input type="checkbox" id="forceSize" checked>
+                            <span class="toggle"></span>
+                            <span>Forzar el tamaño aunque no quepa</span>
+                        </label>
+                        <p class="hint">Si lo desactivas, la fuente se reduce automáticamente para que el poema entre en el lienzo (con columnas si hace falta).</p>
+                        <div class="form-group">
+                            <label>Espacio entre letras <span class="range-val" id="letterSpacingValue" style="float:right">0 px</span></label>
+                            <div class="range-row"><input type="range" id="letterSpacing" min="-5" max="30" value="0" step="1"></div>
+                        </div>
+                    </div></div>
+                </div>
+
+                <!-- ESPACIADO -->
+                <div class="section collapsed" data-section>
+                    <button type="button" class="section-head"><span class="sec-icon"><i data-lucide="ruler"></i></span> Espaciado y márgenes <span class="chevron"><i data-lucide="chevron-down"></i></span></button>
+                    <div class="section-body"><div class="section-body-inner">
+                        <div class="form-group">
+                            <label>Espacio título ↔ poema <span class="range-val" id="titleSpacingValue" style="float:right">120 px</span></label>
+                            <div class="range-row"><input type="range" id="titleSpacing" min="0" max="400" value="120" step="10"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Espacio entre estrofas <span class="range-val" id="lineSpacingValue" style="float:right">80 px</span></label>
+                            <div class="range-row"><input type="range" id="lineSpacing" min="0" max="240" value="80" step="2"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Interlineado <span class="range-val" id="lineHeightValue" style="float:right">1.2×</span></label>
+                            <div class="range-row"><input type="range" id="lineHeight" min="100" max="220" value="120" step="5"></div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Margen horizontal <span class="range-val" id="marginXValue" style="float:right">200 px</span></label>
+                                <div class="range-row"><input type="range" id="marginX" min="60" max="500" value="200" step="10"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Margen superior <span class="range-val" id="marginTopValue" style="float:right">250 px</span></label>
+                                <div class="range-row"><input type="range" id="marginTop" min="60" max="600" value="250" step="10"></div>
+                            </div>
+                        </div>
+                    </div></div>
+                </div>
+
+                <!-- ACABADOS -->
+                <div class="section collapsed" data-section>
+                    <button type="button" class="section-head"><span class="sec-icon"><i data-lucide="sparkles"></i></span> Acabados <span class="chevron"><i data-lucide="chevron-down"></i></span></button>
+                    <div class="section-body"><div class="section-body-inner">
+                        <label class="toggle-row">
+                            <input type="checkbox" id="shadowEnabled">
+                            <span class="toggle"></span>
+                            <span>Sombra del texto</span>
+                        </label>
+                        <div class="form-group" id="shadowControls" style="display:none;">
+                            <label>Intensidad de la sombra <span class="range-val" id="shadowBlurValue" style="float:right">14 px</span></label>
+                            <div class="range-row"><input type="range" id="shadowBlur" min="0" max="60" value="14" step="2"></div>
+                        </div>
+
+                        <label class="toggle-row">
+                            <input type="checkbox" id="borderEnabled">
+                            <span class="toggle"></span>
+                            <span>Marco / borde</span>
+                        </label>
+                        <div class="form-group" id="borderControls" style="display:none;">
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label for="borderColor">Color del marco</label>
+                                    <div class="color-row">
+                                        <input type="color" id="borderColor" value="#8b0000">
+                                        <input type="text" id="borderColorHex" class="hex-input" value="#8b0000">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Grosor <span class="range-val" id="borderWidthValue" style="float:right">10 px</span></label>
+                                    <div class="range-row"><input type="range" id="borderWidth" min="2" max="60" value="10" step="2"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="toggle-row">
+                            <input type="checkbox" id="watermarkEnabled">
+                            <span class="toggle"></span>
+                            <span>Firma / marca de agua</span>
+                        </label>
+                        <div class="form-group" id="watermarkControls" style="display:none;">
+                            <label for="watermarkText">Texto de la firma</label>
+                            <input type="text" id="watermarkText" value="@sr.zrro" placeholder="@tu_usuario">
+                            <label style="margin-top:6px">Opacidad <span class="range-val" id="watermarkOpacityValue" style="float:right">45%</span></label>
+                            <div class="range-row"><input type="range" id="watermarkOpacity" min="10" max="100" value="45" step="5"></div>
+                        </div>
+                    </div></div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="preview-panel">
+            <div class="preview-head">
+                <h2>Vista previa</h2>
+                <span class="preview-meta" id="previewMeta">2160 × 2700</span>
+            </div>
+            <div class="preview-stage">
+                <img id="preview" alt="Vista previa del poema">
+            </div>
+            <div class="download-row">
+                <button class="btn-download" id="downloadBtn" type="button">
+                    <i data-lucide="download"></i>
+                    Descargar PNG
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+    <div class="toast" id="toast"></div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <footer class="footer">
+        <a href="https://instagram.com/sr.zrro" target="_blank" rel="noopener noreferrer">
+            <img class="instagram-icon" src="https://img.icons8.com/fluency/48/instagram-new.png" alt="Instagram"/>
+            <span>@sr.zrro</span>
+        </a>
+    </footer>
+
+    <script src="js/engine.js"></script>
+
+    <!-- ========================================================================
+         ANIMATION LAYER (separate from the canvas engine — no engine code touched)
+         · Staggered entrance reveal of panels + sections on load
+         · Subtle fade/scale pulse on #preview whenever its src is regenerated
+         · Fully gated by prefers-reduced-motion
+         Pure CSS-class orchestration via a MutationObserver — no library needed.
+         ======================================================================== -->
+    <script src="js/animations.js"></script>
+
+    <!-- ========================================================================
+         TABS LAYER (independent — does NOT touch the canvas engine or control wiring)
+         · Turns the 7 collapsible [data-section] panels into a single-active-tab
+           system so the whole app fits one desktop viewport with no page scroll.
+         · Desktop: a .tab-bar at the top of the editor panel.
+         · Mobile (<=768px): a fixed .bottom-nav drives the same active tab, plus a
+           floating "Descargar PNG" button mirroring #downloadBtn.
+         · Collapse behaviour: in tabs mode every section is force-open via CSS
+           (body.tabs-mode rules). The original per-head collapse listeners added in
+           wireEvents() become inert because .section-head is display:none here, so
+           they can never receive clicks. We also remove every .collapsed class so no
+           section starts hidden by the old default. The engine's listeners are left
+           untouched — only their (now unreachable) effect is neutralised by layout.
+         ======================================================================== -->
+    <script src="js/tabs.js"></script>
+</body>
+</html>
