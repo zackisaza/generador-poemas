@@ -809,8 +809,9 @@
                 display: flex;
                 flex-direction: column;
                 gap: 0;
-                /* leave space for bottom-nav so nothing hides under it */
-                padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+                /* no reserved bar anymore — the launcher is a floating FAB.
+                   safe-area lives on the footer (the bottom-most element). */
+                padding-bottom: 0;
             }
 
             /* Preview pinned on top, comfortable fraction of the screen */
@@ -852,7 +853,8 @@
             /* The desktop tab bar is hidden on mobile; the bottom-nav drives tabs */
             .tab-bar { display: none; }
             body.tabs-mode .editor-panel .section > .section-body > .section-body-inner {
-                padding: 18px 16px 22px;
+                /* extra bottom room so the last control clears the floating FAB/PNG */
+                padding: 18px 16px 84px;
                 gap: 20px;
             }
 
@@ -950,7 +952,7 @@
             .mobile-download:active { transform: scale(0.97); }
 
             /* Footer becomes a tiny strip above the nav (not fixed) */
-            .footer { padding: 8px 16px; margin: 0; }
+            .footer { padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px)); margin: 0; }
             .footer a { font-size: 0.82em; }
         }
 
