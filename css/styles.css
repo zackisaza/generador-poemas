@@ -833,7 +833,8 @@
                 border-radius: 0;
                 border-left: none; border-right: none; border-top: none;
                 box-shadow: none;
-                padding: 8px 12px 10px;
+                /* top room so the floating topbar scrim doesn't cover the poem */
+                padding: calc(46px + env(safe-area-inset-top, 0px)) 12px 10px;
                 position: relative;
                 transition: height 0.4s var(--ease);
             }
