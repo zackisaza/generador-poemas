@@ -2,7 +2,7 @@
 // App shell is precached on install; everything else (Google Fonts, Lucide)
 // is cached at runtime the first time it's fetched. Cache-first strategy.
 // Relative paths so it works both at the domain root and under a /repo/ subpath.
-const CACHE = 'poemstudio-v12';
+const CACHE = 'poemstudio-v13';
 const ASSETS = [
   './',
   './index.html',
