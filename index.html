@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instagrameador de poemas · Fantástico Sr. Zorro</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Inline SVG favicon: brand mark (black rounded square + white Lucide feather) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23111111'/%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round' transform='translate(4.5 4.5) scale(0.625)'%3E%3Cpath d='M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z'/%3E%3Cline x1='16' y1='8' x2='2' y2='22'/%3E%3Cline x1='17.5' y1='15' x2='9' y2='15'/%3E%3C/g%3E%3C/svg%3E">
+    <!-- PWA: installable + offline (see sw.js) -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#f5f1ea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -19,6 +24,8 @@
             </div>
         </div>
         <div class="topbar-actions">
+            <button class="ghost-btn icon-only" id="undoBtn" title="Deshacer (Ctrl+Z)" aria-label="Deshacer"><i data-lucide="undo-2"></i></button>
+            <button class="ghost-btn icon-only" id="redoBtn" title="Rehacer (Ctrl+Shift+Z)" aria-label="Rehacer"><i data-lucide="redo-2"></i></button>
             <button class="ghost-btn" id="resetBtn" title="Volver a los valores por defecto"><i data-lucide="rotate-ccw"></i> Restablecer</button>
         </div>
     </div>
@@ -51,6 +58,25 @@
                     </div></div>
                 </div>
 
+                <!-- GUARDADOS -->
+                <div class="section" data-section>
+                    <button type="button" class="section-head"><span class="sec-icon"><i data-lucide="save"></i></span> Guardados <span class="chevron"><i data-lucide="chevron-down"></i></span></button>
+                    <div class="section-body"><div class="section-body-inner">
+                        <div class="form-group">
+                            <label for="compName">Guardar composición actual</label>
+                            <div class="comp-save-row">
+                                <input type="text" id="compName" placeholder="Nombre de la pieza…">
+                                <button type="button" class="ghost-btn" id="compSaveBtn"><i data-lucide="save"></i> Guardar</button>
+                            </div>
+                            <p class="hint">Guardá distintas piezas y volvé a cualquiera cuando quieras.</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Tus composiciones</label>
+                            <div class="comp-list" id="compList"></div>
+                        </div>
+                    </div></div>
+                </div>
+
                 <!-- FORMATO / LIENZO -->
                 <div class="section" data-section>
                     <button type="button" class="section-head"><span class="sec-icon"><i data-lucide="crop"></i></span> Formato del lienzo <span class="chevron"><i data-lucide="chevron-down"></i></span></button>
@@ -77,6 +103,14 @@
                     <div class="section-body"><div class="section-body-inner">
                         <p class="hint">Un punto de partida. Cambia colores y fuentes abajo cuando quieras.</p>
                         <div class="preset-grid" id="presetGrid"></div>
+                        <div class="form-group" style="margin-top:4px;">
+                            <label for="themeName">Guardar tema actual</label>
+                            <div class="comp-save-row">
+                                <input type="text" id="themeName" placeholder="Nombre del tema…">
+                                <button type="button" class="ghost-btn" id="themeSaveBtn"><i data-lucide="save"></i> Guardar</button>
+                            </div>
+                            <p class="hint">Guarda los colores y fuentes actuales como un tema reutilizable (pasá el cursor sobre uno propio para borrarlo).</p>
+                        </div>
                     </div></div>
                 </div>
 
@@ -89,6 +123,7 @@
                             <div class="segmented" id="bgTypeSeg">
                                 <button type="button" data-val="solid" class="active">Sólido</button>
                                 <button type="button" data-val="gradient">Degradado</button>
+                                <button type="button" data-val="image">Imagen</button>
                             </div>
                         </div>
                         <div class="grid-2">
@@ -113,6 +148,19 @@
                                 <input type="range" id="gradientAngle" min="0" max="360" value="135" step="5">
                             </div>
                         </div>
+                        <div class="form-group" id="bgImageGroup" style="display:none;">
+                            <label>Imagen de fondo</label>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                <label class="ghost-btn" for="bgImageInput" style="cursor:pointer;"><i data-lucide="image-up"></i> Subir imagen</label>
+                                <input type="file" id="bgImageInput" accept="image/*" style="display:none;">
+                                <button type="button" class="ghost-btn" id="bgImageRemove"><i data-lucide="trash-2"></i> Quitar</button>
+                            </div>
+                            <p class="hint">La foto se ajusta al lienzo (recorte centrado). El color de fondo queda detrás como respaldo.</p>
+                            <label style="margin-top:6px">Opacidad de la imagen <span class="range-val" id="bgImageOpacityValue" style="float:right">100%</span></label>
+                            <div class="range-row"><input type="range" id="bgImageOpacity" min="10" max="100" value="100" step="5"></div>
+                            <label style="margin-top:6px">Oscurecer (para legibilidad) <span class="range-val" id="bgOverlayValue" style="float:right">35%</span></label>
+                            <div class="range-row"><input type="range" id="bgOverlay" min="0" max="85" value="35" step="5"></div>
+                        </div>
                         <div class="form-group">
                             <label for="textColor">Color del texto</label>
                             <div class="color-row">
@@ -130,11 +178,11 @@
                         <div class="grid-2">
                             <div class="form-group">
                                 <label for="titleFont">Fuente del título</label>
-                                <select id="titleFont"></select>
+                                <div class="font-picker" id="titleFontPicker" data-key="titleFont"></div>
                             </div>
                             <div class="form-group">
                                 <label for="fontFamily">Fuente del poema</label>
-                                <select id="fontFamily"></select>
+                                <div class="font-picker" id="fontFamilyPicker" data-key="fontFamily"></div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -143,6 +191,14 @@
                                 <button type="button" data-val="left">⬅ Izq.</button>
                                 <button type="button" data-val="center" class="active">⬌ Centro</button>
                                 <button type="button" data-val="right">Der. ➡</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Alineación vertical</label>
+                            <div class="segmented" id="valignSeg">
+                                <button type="button" data-val="top" class="active">Arriba</button>
+                                <button type="button" data-val="center">Centro</button>
+                                <button type="button" data-val="bottom">Abajo</button>
                             </div>
                         </div>
                         <div class="form-group">
@@ -210,6 +266,27 @@
                         </div>
 
                         <label class="toggle-row">
+                            <input type="checkbox" id="outlineEnabled">
+                            <span class="toggle"></span>
+                            <span>Contorno del texto</span>
+                        </label>
+                        <div class="form-group" id="outlineControls" style="display:none;">
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label for="outlineColor">Color del contorno</label>
+                                    <div class="color-row">
+                                        <input type="color" id="outlineColor" value="#000000">
+                                        <input type="text" id="outlineColorHex" class="hex-input" value="#000000">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Grosor <span class="range-val" id="outlineWidthValue" style="float:right">6 px</span></label>
+                                    <div class="range-row"><input type="range" id="outlineWidth" min="1" max="30" value="6" step="1"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="toggle-row">
                             <input type="checkbox" id="borderEnabled">
                             <span class="toggle"></span>
                             <span>Marco / borde</span>
@@ -261,6 +338,10 @@
                     Descargar PNG
                 </button>
             </div>
+            <div class="export-actions">
+                <button class="ghost-btn" id="copyBtn" type="button"><i data-lucide="copy"></i> Copiar</button>
+                <button class="ghost-btn" id="shareBtn" type="button" style="display:none;"><i data-lucide="share-2"></i> Compartir</button>
+            </div>
         </div>
     </div>
 
@@ -277,6 +358,7 @@
     </footer>
 
     <script src="js/engine.js"></script>
+    <script src="js/fontpicker.js"></script>
 
     <!-- ========================================================================
          ANIMATION LAYER (separate from the canvas engine — no engine code touched)
@@ -302,5 +384,16 @@
            untouched — only their (now unreachable) effect is neutralised by layout.
          ======================================================================== -->
     <script src="js/tabs.js"></script>
+    <script src="js/interactive.js"></script>
+    <script src="js/library.js"></script>
+    <script src="js/wheel.js"></script>
+    <script src="js/previewpeek.js"></script>
+    <script src="js/sectionsmenu.js"></script>
+    <!-- Register the service worker for offline / installable PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+        }
+    </script>
 </body>
 </html>

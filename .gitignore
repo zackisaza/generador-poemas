@@ -9,3 +9,6 @@ Icon
 .vscode/
 .idea/
 *.swp
+
+# Tooling / estado local del agente
+.atl/
